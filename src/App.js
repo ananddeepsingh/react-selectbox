@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import SelectBox from './select-search-dropdown/select-box';
-import data from './data/countries.json';
+import * as service from "./server";
+const SelectBox = React.lazy(() => import('./select-search-dropdown/select-box'));
+
 
 const App = () => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [isPrivilege] = useState(true);
-  const [countries, setCountries] = useState(data);
+  const [countries, setCountries] = useState([]);
+
 
   const addCountry = (country) => {
     let isRecordExist = countries.filter(c => c.label === country).length > 0 ? true : false;
@@ -14,6 +16,7 @@ const App = () => {
       value: countries.length + 1,
       label: country
     }
+    
     setSelectedCountry(country)
 
     if (!isRecordExist) {
@@ -21,13 +24,36 @@ const App = () => {
     }
   }
 
+  async function fectchAPI() {
+    await service.getData() 
+    .then(res => {
+      console.log('res', res);
+      setCountries(res)
+
+      console.log(countries)
+    })
+    .catch((err) => console.error(err))
+  }
+  
+  useEffect(() =>{
+    // fectchAPI()
+    service.getData() 
+    .then(res => {
+      setCountries(res);
+    })
+    .catch((err) => console.error(err))
+  },[]);
+
   return (
     <div className="app">
-      <SelectBox
-        isPrivilege={isPrivilege}
-        options={countries}
-        addCountry={addCountry}
-      />
+      <React.Suspense fallback='Loading Selectbox...'>
+        <SelectBox
+          isPrivilege={isPrivilege}
+          options={countries}
+          addCountry={addCountry}
+        />
+      </React.Suspense>
+      
       {
         selectedCountry
           ? <p>Selected Value is  <strong>{selectedCountry} </strong></p>

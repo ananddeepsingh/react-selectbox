@@ -24,19 +24,7 @@ const App = () => {
     }
   }
 
-  async function fectchAPI() {
-    await service.getData() 
-    .then(res => {
-      console.log('res', res);
-      setCountries(res)
-
-      console.log(countries)
-    })
-    .catch((err) => console.error(err))
-  }
-  
   useEffect(() =>{
-    // fectchAPI()
     service.getData() 
     .then(res => {
       setCountries(res);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const SelectBox = ({ options, addCountry, isPrivilege }) => {
   const [renderAllRecords, setRenderAllRecords] = useState(false);
@@ -6,7 +6,7 @@ const SelectBox = ({ options, addCountry, isPrivilege }) => {
   const [selectedCountry, setSelectedCountry] = useState('');
   const [searchString, setSearchString] = useState('');
   const [defaultValue] = useState('Select a Location');
-  const [defaultValueoptions] = useState(options);
+  const [defaultValueoptions, setDefaultValueOptions] = useState(options);
 
   const formRef = React.createRef();
 
@@ -14,6 +14,10 @@ const SelectBox = ({ options, addCountry, isPrivilege }) => {
     setShowSearchBox(!showSearchBox)
     setRenderAllRecords(false);
   }
+
+  useEffect(() => {
+    setDefaultValueOptions(options);
+  }, [options]);
 
   const getSelectedCountry = event => {
     if (
